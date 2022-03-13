@@ -1,3 +1,7 @@
+pub mod menus;
+pub mod util;
+
 fn main() {
-    println!("Hello, world!");
+    util::init_prefs();
+    menus::run();
 }

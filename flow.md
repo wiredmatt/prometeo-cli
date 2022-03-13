@@ -1,0 +1,1 @@
+- Read env vars and check if API key was set, if it wasn't ask for it. Otherwise display the main menu
