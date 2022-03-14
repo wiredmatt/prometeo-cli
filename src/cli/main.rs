@@ -1,4 +1,4 @@
-use crate::{menus, util};
+use crate::{cli, util};
 use dialoguer::{theme::ColorfulTheme, Select};
 
 fn menu_options() -> Vec<String> {
@@ -11,7 +11,7 @@ fn menu_options() -> Vec<String> {
     ]
 }
 
-pub fn menu() {
+pub async fn menu() {
     let mut selection: usize;
 
     loop {
@@ -26,8 +26,9 @@ pub fn menu() {
             .unwrap();
 
         match selection {
-            3 => menus::config::menu(),
+            0 => cli::auth::menu().await,
+            3 => cli::config::menu(),
             4 | _ => break,
-        }
-    }
+        };
+    };
 }

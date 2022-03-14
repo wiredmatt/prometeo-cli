@@ -1,7 +1,7 @@
-pub mod menus;
+pub mod cli;
 pub mod util;
 
-fn main() {
-    util::init_prefs();
-    menus::run();
+#[tokio::main]
+async fn main() {
+    cli::run().await;
 }

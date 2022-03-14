@@ -1,38 +1,9 @@
-use dialoguer::{theme::ColorfulTheme, Input};
-use jfs::Store;
+use core::fmt;
 use std::io::Read;
 
-pub fn init_prefs() -> Store {
-    match dirs::config_dir() {
-        Some(path) => {
-            let cfg_path = [path.display().to_string(), "prometeo.json".to_string()].join("/");
-            let mut cfg = jfs::Config::default();
-            cfg.single = true;
+use serde::{Deserialize, Serialize};
 
-            let res = jfs::Store::new_with_cfg(cfg_path, cfg);
-
-            match res {
-                Ok(db) => db,
-                Err(e) => panic!("Error: {:?}", e),
-            }
-        }
-        None => panic!("Impossible to get your config dir!"),
-    }
-}
-
-pub fn get_pref(key: &str) -> Option<String> {
-    match init_prefs().get(key) {
-        Ok(prefs) => prefs,
-        Err(_) => None,
-    }
-}
-
-pub fn set_pref(key: String, value: String) {
-    match init_prefs().save_with_id(&value, &key) {
-        Err(e) => panic!("Error {:?}", e),
-        Ok(_) => (),
-    }
-}
+pub mod db;
 
 pub fn get_file_contents(path: String) -> String {
     let mut file = std::fs::File::open(path).unwrap();
@@ -56,20 +27,44 @@ pub fn clear_console() {
         .success());
 }
 
-pub fn set_api_key() {
-    let input = Input::with_theme(&ColorfulTheme::default())
-        .with_prompt("Paste your API Key: ")
-        .validate_with({
-            move |input: &String| -> Result<(), &str> {
-                if input.len() == 64 {
-                    Ok(())
-                } else {
-                    Err("API Keys must be of length 64.")
-                }
-            }
-        })
-        .interact_text()
-        .unwrap();
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Provider {
+    pub code: String,
+    pub country: String,
+    pub name: String,
+}
 
-    set_pref("API_KEY".to_string(), input);
+#[derive(Serialize, Deserialize, Debug)]
+pub struct ProvidersResponse {
+    pub providers: Vec<Provider>,
+    pub status: String,
+}
+
+impl fmt::Display for Provider {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{} ({})", self.name, self.code)
+    }
+}
+pub async fn list_providers() -> Vec<Provider> {
+    rekuest::<ProvidersResponse>("provider/").await.providers
+}
+
+pub async fn rekuest<T: for<'de> Deserialize<'de>>(endpoint: &str) -> T {
+    match db::get_api_key() {
+        Some(api_key) => {
+            match reqwest::Client::new()
+                .get(["https://banking.sandbox.prometeoapi.com", endpoint].join("/"))
+                .header("X-API-Key", api_key)
+                .send()
+                .await
+            {
+                Ok(res) => match res.json::<T>().await {
+                    Ok(data) => data,
+                    Err(e) => panic!("{}", e),
+                },
+                Err(_) => panic!("Can't parse response"),
+            }
+        }
+        None => panic!("Missing API KEY"),
+    }
 }
