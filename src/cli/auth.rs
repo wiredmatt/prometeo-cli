@@ -30,13 +30,13 @@ pub async fn login() {
         .interact()
         .unwrap();
 
-    // let params = [("foo", "bar"), ("baz", "quux")];
-    // let client = reqwest::Client::new();
-    // let res = client
-    //     .post("http://httpbin.org/post")
-    //     .form(&params)
-    //     .send()
-    //     .await?;
+    let params = [("foo", "bar"), ("baz", "quux")];
+    let client = reqwest::Client::new();
+    let res = client
+        .post("http://httpbin.org/post")
+        .form(&params)
+        .send()
+        .await;
 
     // db::set_pref("API_KEY".to_string(), input);
 }

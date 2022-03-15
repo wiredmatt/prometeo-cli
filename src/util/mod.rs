@@ -1,9 +1,8 @@
-use core::fmt;
+use serde::Deserialize;
 use std::io::Read;
 
-use serde::{Deserialize, Serialize};
-
 pub mod db;
+pub mod types;
 
 pub fn get_file_contents(path: String) -> String {
     let mut file = std::fs::File::open(path).unwrap();
@@ -27,29 +26,13 @@ pub fn clear_console() {
         .success());
 }
 
-#[derive(Serialize, Deserialize, Debug)]
-pub struct Provider {
-    pub code: String,
-    pub country: String,
-    pub name: String,
+pub async fn list_providers() -> Vec<types::Provider> {
+    fetch::<types::ProvidersResponse>("provider/")
+        .await
+        .providers
 }
 
-#[derive(Serialize, Deserialize, Debug)]
-pub struct ProvidersResponse {
-    pub providers: Vec<Provider>,
-    pub status: String,
-}
-
-impl fmt::Display for Provider {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{} ({})", self.name, self.code)
-    }
-}
-pub async fn list_providers() -> Vec<Provider> {
-    rekuest::<ProvidersResponse>("provider/").await.providers
-}
-
-pub async fn rekuest<T: for<'de> Deserialize<'de>>(endpoint: &str) -> T {
+pub async fn fetch<T: for<'de> Deserialize<'de>>(endpoint: &str) -> T {
     match db::get_api_key() {
         Some(api_key) => {
             match reqwest::Client::new()
@@ -60,9 +43,9 @@ pub async fn rekuest<T: for<'de> Deserialize<'de>>(endpoint: &str) -> T {
             {
                 Ok(res) => match res.json::<T>().await {
                     Ok(data) => data,
-                    Err(e) => panic!("{}", e),
+                    Err(e) => panic!("Unexpected response shape \n{}", e),
                 },
-                Err(_) => panic!("Can't parse response"),
+                Err(e) => panic!("Can't parse response\n {}", e),
             }
         }
         None => panic!("Missing API KEY"),
