@@ -31,6 +31,8 @@ pub async fn login() {
         .unwrap();
 
     let params = [("foo", "bar"), ("baz", "quux")];
+
+    
 }
 
 pub async fn menu() {
