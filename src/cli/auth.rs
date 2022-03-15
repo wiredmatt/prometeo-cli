@@ -1,6 +1,6 @@
 use dialoguer::{theme::ColorfulTheme, Select};
 
-use crate::util::{self, db};
+use crate::{api, db, util};
 
 fn menu_options() -> Vec<String> {
     let mut login_option = "Login".to_owned();
@@ -21,7 +21,7 @@ fn menu_options() -> Vec<String> {
 }
 
 pub async fn login() {
-    let providers = util::list_providers().await;
+    let providers = api::list_providers().await;
 
     let selection = Select::with_theme(&ColorfulTheme::default())
         .with_prompt("Select a provider (🠕/🠗)")
@@ -31,14 +31,6 @@ pub async fn login() {
         .unwrap();
 
     let params = [("foo", "bar"), ("baz", "quux")];
-    let client = reqwest::Client::new();
-    let res = client
-        .post("http://httpbin.org/post")
-        .form(&params)
-        .send()
-        .await;
-
-    // db::set_pref("API_KEY".to_string(), input);
 }
 
 pub async fn menu() {

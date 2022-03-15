@@ -1,6 +1,6 @@
 use dialoguer::{theme::ColorfulTheme, Input, Select};
 
-use crate::util::{self, db};
+use crate::{util, db};
 
 fn menu_options() -> Vec<String> {
     let mut set_api_option = "Set API Key".to_owned();

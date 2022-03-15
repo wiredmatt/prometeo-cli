@@ -1,12 +1,12 @@
 use jfs::Store;
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
 pub struct User {
-    pub document: String, 
+    pub document: String,
     pub email: String,
     pub name: String,
-    key: String
+    key: String,
 }
 
 #[derive(Serialize, Deserialize)]
