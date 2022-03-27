@@ -82,6 +82,8 @@ You can store things with it, gets the job done. Storing data such as  `api_key`
 
 [![Demo](./demo.png)](https://www.youtube.com/watch?v=AbrzzaQqG5M "Prometeo CLI Demo")
 
+(Click on the image to see the youtube video)
+
 ## Reference
 
 [Ignite Community](https://joinignitecommunity.com/)
