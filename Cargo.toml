@@ -13,3 +13,4 @@ serde = {version = "1.0.136", features=["derive"] }
 serde_json = "1.0.59"
 jfs = "0.7.1"
 dirs = "4.0.0"
+colored = "2"

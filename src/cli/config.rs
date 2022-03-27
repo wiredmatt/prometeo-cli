@@ -1,6 +1,6 @@
 use dialoguer::{theme::ColorfulTheme, Input, Select};
 
-use crate::{util, db};
+use crate::{api::Api, db, util};
 
 fn menu_options() -> Vec<String> {
     let mut set_api_option = "Set API Key".to_owned();
@@ -12,12 +12,12 @@ fn menu_options() -> Vec<String> {
     vec![String::from(set_api_option), String::from("↵ Back")]
 }
 
-pub fn set_api_key() {
+pub fn set_api_key(api: &mut Api) {
     let input = Input::with_theme(&ColorfulTheme::default())
         .with_prompt("Paste your API Key: ")
         .validate_with({
             move |input: &String| -> Result<(), &str> {
-                if input.len() == 64 {
+                if input.trim().len() == 64 {
                     Ok(())
                 } else {
                     Err("API Keys must be of length 64.")
@@ -28,9 +28,10 @@ pub fn set_api_key() {
         .unwrap();
 
     db::set_pref("API_KEY".to_string(), input);
+    api.update_api_key();
 }
 
-pub fn menu() {
+pub fn menu(api: &mut Api) {
     let mut selection: usize;
 
     loop {
@@ -45,7 +46,7 @@ pub fn menu() {
             .unwrap();
 
         match selection {
-            0 => set_api_key(),
+            0 => set_api_key(api),
             1 | _ => break,
         }
     }

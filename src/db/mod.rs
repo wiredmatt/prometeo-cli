@@ -1,19 +1,4 @@
 use jfs::Store;
-use serde::{Deserialize, Serialize};
-
-#[derive(Serialize, Deserialize)]
-pub struct User {
-    pub document: String,
-    pub email: String,
-    pub name: String,
-    key: String,
-}
-
-#[derive(Serialize, Deserialize)]
-struct Prefs {
-    api_key: String,
-    user: User,
-}
 
 pub fn db() -> Store {
     match dirs::config_dir() {
@@ -40,8 +25,8 @@ pub fn get_api_key() -> Option<String> {
     }
 }
 
-pub fn get_user() -> Option<User> {
-    match db().get::<User>("user") {
+pub fn get_user() -> Option<String> {
+    match db().get::<String>("USERNAME") {
         Ok(user) => Some(user),
         Err(_) => None,
     }
@@ -50,6 +35,13 @@ pub fn get_user() -> Option<User> {
 pub fn set_pref(key: String, value: String) {
     match db().save_with_id(&value, &key) {
         Err(e) => panic!("Error {:?}", e),
+        Ok(_) => (),
+    }
+}
+
+pub fn delete_pref(key: String) {
+    match db().delete(&key) {
+        Err(_) => (),
         Ok(_) => (),
     }
 }

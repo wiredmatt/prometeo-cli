@@ -1,4 +1,4 @@
-use crate::{cli, util};
+use crate::{api, cli, util};
 use dialoguer::{theme::ColorfulTheme, Select};
 
 fn menu_options() -> Vec<String> {
@@ -12,23 +12,27 @@ fn menu_options() -> Vec<String> {
 }
 
 pub async fn menu() {
-    let mut selection: usize;
+    match api::Api::init() {
+        Ok(mut api) => {
+            let mut selection: usize;
+            loop {
+                util::clear_console();
+                util::print_top_message();
 
-    loop {
-        util::clear_console();
-        util::print_top_message();
+                selection = Select::with_theme(&ColorfulTheme::default())
+                    .with_prompt("Select an option (🠕/🠗)")
+                    .default(0)
+                    .items(&menu_options()[..])
+                    .interact()
+                    .unwrap();
 
-        selection = Select::with_theme(&ColorfulTheme::default())
-            .with_prompt("Select an option (🠕/🠗)")
-            .default(0)
-            .items(&menu_options()[..])
-            .interact()
-            .unwrap();
-
-        match selection {
-            0 => cli::auth::menu().await,
-            3 => cli::config::menu(),
-            4 | _ => break,
-        };
-    };
+                match selection {
+                    0 => cli::auth::menu(&api).await,
+                    3 => cli::config::menu(&mut api),
+                    4 | _ => break,
+                };
+            }
+        }
+        Err(_) => todo!(),
+    }
 }

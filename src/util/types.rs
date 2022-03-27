@@ -1,7 +1,6 @@
 use core::fmt;
 
-use serde::{Serialize, Deserialize};
-
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Provider {
@@ -14,6 +13,25 @@ pub struct Provider {
 pub struct ProvidersResponse {
     pub providers: Vec<Provider>,
     pub status: String,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct LoginResponse {
+    pub key: String,
+    pub status: String,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct User {
+    pub document: String,
+    pub email: String,
+    pub name: String,
+}
+
+#[derive(Serialize, Deserialize)]
+struct Prefs {
+    api_key: String,
+    user: User,
 }
 
 impl fmt::Display for Provider {
