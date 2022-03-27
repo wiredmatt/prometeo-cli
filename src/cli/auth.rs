@@ -78,7 +78,8 @@ pub async fn login(api: &Api) {
 }
 
 pub fn logout() {
-    db::delete_pref("USERNAME".to_string())
+    db::delete_pref("USERNAME".to_string());
+    db::delete_pref("USER_KEY".to_string())
 }
 
 pub async fn menu(api: &Api) {
