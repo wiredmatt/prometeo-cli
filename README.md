@@ -28,9 +28,11 @@ The challenge was to develop a CLI that could interact with the Prometeo Open Ba
 
 #### Rust
 
+##### Why?
+
 Every developer should have at least one project with Rust otherwise you're irrelevant
 
-Crates used:
+##### Crates used:
 
 - reqwest: makes requests
 - tokio: asynchronous support for rust
