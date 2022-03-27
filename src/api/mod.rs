@@ -1,15 +1,15 @@
 use crate::{
     db,
-    util::types::{self, LoginResponse},
+    util::types::{self, AccountsResponse, CreditCardsResponse, LoginResponse},
 };
 use core::panic;
 use serde::Deserialize;
 use std::time::Duration;
 
 pub struct Api {
-    client: reqwest::Client,
-    base_url: String,
+    pub client: reqwest::Client,
     pub api_key: Option<String>,
+    base_url: String,
 }
 
 impl Api {
@@ -80,6 +80,11 @@ impl Api {
         }
     }
 
+    pub async fn login(&self, form_data: Vec<(&str, &str)>) -> Result<LoginResponse, String> {
+        self.fetch::<types::LoginResponse>("login/", "POST+FORM", None, Some(form_data))
+            .await
+    }
+
     pub async fn list_providers(&self) -> Vec<types::Provider> {
         match self
             .fetch::<types::ProvidersResponse>("provider/", "GET", None, None)
@@ -90,8 +95,33 @@ impl Api {
         }
     }
 
-    pub async fn login(&self, form_data: Vec<(&str, &str)>) -> Result<LoginResponse, String> {
-        self.fetch::<types::LoginResponse>("login/", "POST+FORM", None, Some(form_data))
+    pub async fn get_provider_details(&self, code: String) -> Result<types::Provider, String> {
+        match self
+            .fetch::<types::Provider>(&["provider", code.as_str()].join("/"), "GET", None, None)
             .await
+        {
+            Ok(data) => Ok(data),
+            Err(e) => panic!("Unexpected error\n\n{}", e),
+        }
+    }
+
+    pub async fn get_accounts(&self, user_key: String) -> Result<AccountsResponse, String> {
+        self.fetch::<types::AccountsResponse>(
+            &[["account", "?key"].join("/"), user_key].join("="),
+            "GET",
+            None,
+            None,
+        )
+        .await
+    }
+
+    pub async fn get_credit_cards(&self, user_key: String) -> Result<CreditCardsResponse, String> {
+        self.fetch::<types::CreditCardsResponse>(
+            &[["credit-card", "?key"].join("/"), user_key].join("="),
+            "GET",
+            None,
+            None,
+        )
+        .await
     }
 }

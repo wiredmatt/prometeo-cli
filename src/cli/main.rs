@@ -28,6 +28,8 @@ pub async fn menu() {
 
                 match selection {
                     0 => cli::auth::menu(&api).await,
+                    1 => cli::transactional_data::menu(&api).await,
+                    2 => cli::meta::menu(&api).await,
                     3 => cli::config::menu(&mut api),
                     4 | _ => break,
                 };

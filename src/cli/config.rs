@@ -12,7 +12,7 @@ fn menu_options() -> Vec<String> {
     vec![String::from(set_api_option), String::from("↵ Back")]
 }
 
-pub fn set_api_key(api: &mut Api) {
+fn set_api_key(api: &mut Api) {
     let input = Input::with_theme(&ColorfulTheme::default())
         .with_prompt("Paste your API Key: ")
         .validate_with({

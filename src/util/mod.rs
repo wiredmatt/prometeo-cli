@@ -1,5 +1,6 @@
-use std::io::Read;
 use colored::*;
+use dialoguer::{theme::ColorfulTheme, Select};
+use std::io::Read;
 
 pub mod types;
 
@@ -24,4 +25,12 @@ pub fn clear_console() {
         .or_else(|_| std::process::Command::new("clear").status())
         .unwrap()
         .success());
+}
+
+pub fn back_menu() {
+    Select::with_theme(&ColorfulTheme::default())
+        .default(0)
+        .items(&["↵ Back"])
+        .interact()
+        .unwrap();
 }

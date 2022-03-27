@@ -32,6 +32,13 @@ pub fn get_user() -> Option<String> {
     }
 }
 
+pub fn get_user_key() -> Option<String> {
+    match db().get::<String>("USER_KEY") {
+        Ok(user) => Some(user),
+        Err(_) => None,
+    }
+}
+
 pub fn set_pref(key: String, value: String) {
     match db().save_with_id(&value, &key) {
         Err(e) => panic!("Error {:?}", e),

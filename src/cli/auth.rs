@@ -21,7 +21,7 @@ fn menu_options() -> Vec<String> {
     }
 }
 
-pub async fn login(api: &Api) {
+async fn login(api: &Api) {
     let providers = api.list_providers().await;
 
     let provider = Select::with_theme(&ColorfulTheme::default())
@@ -83,7 +83,7 @@ pub fn logout() {
 }
 
 pub async fn menu(api: &Api) {
-    let mut selection: usize;
+    let selection: usize;
 
     match api.api_key {
         Some(_) => loop {
@@ -98,7 +98,10 @@ pub async fn menu(api: &Api) {
                 .unwrap();
 
             match selection {
-                0 => login(api).await,
+                0 => {
+                    login(api).await;
+                    break;
+                }
                 1 => {
                     logout();
                     break;
