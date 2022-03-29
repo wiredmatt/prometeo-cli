@@ -12,17 +12,17 @@ Get them from [Releases](https://github.com/system32uwu/prometeo-cli/releases/ta
 
 ### Building the binaries
 
-Make sure you have rust installed in your system, if you don't get it from [here](https://www.rust-lang.org/tools/install).
+Make sure you have rust installed in your system, if you don't, get it from [here](https://www.rust-lang.org/tools/install).
 
 #### For host OS
 
-You can simply run `cargo build -r`, 
+You can simply run `cargo build -r`
 
 #### For any other OS
 
 Check out [cross](https://github.com/cross-rs/cross)
 
-As my host OS is Arch Linux (btw), in order to build for Windows I had to use the following command:
+For example, as my host OS is Arch Linux (btw), I had to use the following command to make a build for Windows:
 
 `cross build --target x86_64-pc-windows-gnu`
 
@@ -61,7 +61,7 @@ As my host OS is Arch Linux (btw), in order to build for Windows I had to use th
 
 ##### Why?
 
-Every developer should have at least one project with Rust otherwise you're irrelevant
+Every developer should have at least one project written in Rust otherwise you're irrelevant
 
 ##### Crates used:
 
@@ -82,7 +82,7 @@ You can store things with it, gets the job done. Storing data such as  `api_key`
 
 [![Demo](./demo.png)](https://www.youtube.com/watch?v=AbrzzaQqG5M "Prometeo CLI Demo")
 
-(Click on the image to see the youtube video)
+(Click on the image to see the a demo)
 
 ## Reference
 
